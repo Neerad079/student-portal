@@ -2,18 +2,17 @@ package com.portal.studentportal.dtos;
 
 import com.portal.studentportal.entity.Student;
 import com.portal.studentportal.service.StudentService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class RegisterRequest {
-    @Autowired
-    private StudentService studentService;
+@Data
 
-    @PostMapping("/register")
-    public Student register(@RequestBody Student student) {
-       return studentService.registerStudent(student);
-        }
+public class RegisterRequest {
+    private String username;
+    private String password;
+    private String roll_no;
+    private String email;
 }

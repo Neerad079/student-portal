@@ -1,5 +1,7 @@
 package com.portal.studentportal.config;
 
+import com.portal.studentportal.security.JWTUtil;
+import com.portal.studentportal.security.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +16,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    private final JwtAuthFilter jwtAuthFilter;
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter1) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthFilter = jwtAuthFilter1;
     }
 
     @Bean
@@ -33,12 +38,13 @@ public class SecurityConfig {
                 .sessionManagement(s_-> s_.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //3 no authentication required when registering or logging in  (obv) so permit that
                 .authorizeHttpRequests(request-> request
-                        .requestMatchers("/register","/login")
+                        .requestMatchers("/auth/register","/auth/login")
                         .permitAll()
                         // rest all needs to authenticated
                         .anyRequest().authenticated())
                         //4 Enable basic Auth
                 .httpBasic(Customizer.withDefaults())
+              .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
     @Bean
