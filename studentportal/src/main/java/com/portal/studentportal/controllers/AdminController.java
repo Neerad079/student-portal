@@ -1,6 +1,6 @@
 package com.portal.studentportal.controllers;
 
-import com.portal.studentportal.entity.Student;
+import com.portal.studentportal.dtos.AdminDto;
 import com.portal.studentportal.service.AdminService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +16,7 @@ public class AdminController {
         this.adminService = adminService;
     }
     @GetMapping("/students")
-    public List<Student> getAllStudents() {
+    public List<AdminDto> getAllStudents() {
        return adminService.getAllStudents();
     }
 }
