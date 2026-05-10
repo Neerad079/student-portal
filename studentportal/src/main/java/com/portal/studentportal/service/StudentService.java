@@ -1,8 +1,6 @@
 package com.portal.studentportal.service;
 
-import com.portal.studentportal.dtos.AuthResponse;
-import com.portal.studentportal.dtos.LoginRequest;
-import com.portal.studentportal.dtos.RegisterRequest;
+import com.portal.studentportal.dtos.*;
 import com.portal.studentportal.entity.Student;
 import com.portal.studentportal.repository.StudentRepository;
 import com.portal.studentportal.security.JWTUtil;
@@ -39,22 +37,36 @@ public class StudentService {
         student.setRole("USER");
         return studentRepository.save(student);
     }
-    public String verify(LoginRequest student){
-        Authentication authentication =
-                authManager.authenticate(new UsernamePasswordAuthenticationToken(student.getUsername(), student.getPassword()));
-        if(authentication.isAuthenticated()){
-            // returns true or false
-            return jwtService.generateToken(student.getUsername());
+    public String verify(LoginRequest loginRequest) {
+        try {
+            Authentication authentication =
+                    authManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                // Fetch the user from DB to get their assigned role
+                Student student = studentRepository.findByUsername(loginRequest.getUsername());
+                return jwtService.generateToken(student.getUsername(), student.getRole());
+            }
+        }catch (Exception e) {
+            System.out.println("Authentication Failed: " + e.getMessage());
         }
-        else{
-            return "Fail";
-        }
+        return "Fail";
     }
     public AuthResponse registerAndGetToken(RegisterRequest req) {
-        Student student = new Student(req.getRoll_no(), req.getEmail(), req.getUsername(), req.getPassword(), "USER");
+        Student student = new Student(null,req.getRoll_no(), req.getEmail(), req.getUsername(), req.getPassword(), "USER");
         Student saved = registerStudent(student);
-        String token = jwtService.generateToken(saved.getUsername());
+        // saved.getRole() will always return USER but that's fine,cuz only the students will be registering themselves the admin will be created through sql itself
+        String token = jwtService.generateToken(saved.getUsername(), saved.getRole());
         return new AuthResponse(token);
+    }
+    public DashboardDto getStudentByUsername(String username){
+        Student student = studentRepository.findByUsername(username);
+
+        return  DashboardDto.builder()
+                .username(student.getUsername())
+                .email(student.getEmail())
+                .roll_no(student.getRoll_no())
+                .build();
+
     }
 
 }

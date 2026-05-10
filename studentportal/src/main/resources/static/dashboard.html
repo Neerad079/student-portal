@@ -2,13 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-      <h1>Student Portal
-          <div>
-              Welcome Student
-          </div>
+    <nav class="navbar">
+        <div class="nav-brand">EduPortal</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Dashboard</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Fee</a></li>
+            <li><a href="#">Result</a></li>
 
+        </ul>
+        <button id="logout-btn" class="btn-logout">Log Out</button>
+    </nav>
+
+    <main class="dashboard-container">
+        <div class="welcome-banner">
+            <h1>Welcome to your Dashboard!</h1>
+            <p>Your portal is ready.</p>
+        </div>
+        
+        <div class="placeholder-content">
+            <p>More features coming soon...</p>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Handle Logout
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('jwtToken');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
 </body>
 </html>

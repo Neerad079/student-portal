@@ -14,8 +14,8 @@ document.querySelector("form").addEventListener("submit", async function(e) {
 
     if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("token", data.token);
-        alert("Login successful ✅");
+        localStorage.setItem("jwtToken", data.token);
+        // alert("Login successful ✅");
         window.location.href = "dashboard.html";  // redirect after login
     } else {
         alert("Invalid username or password");

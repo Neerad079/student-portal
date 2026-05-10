@@ -2,6 +2,7 @@ package com.portal.studentportal.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Student {
     @Id
-    private String roll_no;  // Manually set, not auto-generated
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String roll_no;
     private String email;
     private String username;
     private String password;

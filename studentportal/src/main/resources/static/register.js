@@ -18,8 +18,8 @@ document.querySelector("form").addEventListener("submit", async function (e) {
         body: JSON.stringify({username, password, email, roll_no })
     });
     if (response.ok) {
-        const response = await response.json();
-        localStorage.setItem("token", data.token);
+        const data = await response.json();
+        localStorage.setItem("jwtToken", data.token);
         alert("Successfully registered!");
         window.location.href = "dashboard.html"; // directly redirecting to dashboard instead of logging in again
     }

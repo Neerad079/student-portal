@@ -29,8 +29,9 @@ public class JWTUtil {
         SecretKey sk = keyGenerator.generateKey();
         secretKey= Base64.getEncoder().encodeToString(sk.getEncoded());
     }
-    public String generateToken(String username){
+    public String generateToken(String username, String role){
         Map<String, Object> claims = new HashMap<String, Object>();
+        claims.put("role", role); // modifying the JWT so that it include roles inside it
         return Jwts.builder()
                 .setClaims(claims) // Claims let you store custom data inside the JWT token, like:
                 //User roles/permissions
@@ -48,6 +49,10 @@ public class JWTUtil {
     public String extractUserName(String token) {
         // extract the username from jwt token
         return extractClaim(token, Claims::getSubject);
+    }
+    public String extractRole(String token) {
+        // to extract the ROLE from the jwt token
+        return extractClaim(token, claims -> (String) claims.get("role"));
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
